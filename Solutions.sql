@@ -86,7 +86,7 @@ WHERE EXTRACT(YEAR FROM CURRENT_DATE) - b.year_founded <= 100
 GROUP BY c.category
 ORDER BY average_age DESC;
 
-14. What are the most common business categories within each country?
+13. What are the most common business categories within each country?
 SELECT co.country, 
        c.category,
        COUNT(*) AS category_count
@@ -96,7 +96,7 @@ INNER JOIN business.categories AS c ON b.category_code = c.category_code
 GROUP BY co.country, c.category
 ORDER BY co.country, category_count DESC;
 
-15. Which countries have the most diverse representation of business categories?
+14. Which countries have the most diverse representation of business categories?
 SELECT co.country, 
        COUNT(DISTINCT c.category) AS unique_categories
 FROM business.businesses AS b
@@ -105,7 +105,7 @@ INNER JOIN business.categories AS c ON b.category_code = c.category_code
 GROUP BY co.country
 ORDER BY unique_categories DESC;
 
-16. Identify any countries where a single category dominates the oldest businesses.
+15. Identify any countries where a single category dominates the oldest businesses.
 WITH OldestBusinesses AS (
   SELECT co.country, c.category, b.year_founded
   FROM business.businesses AS b
@@ -119,7 +119,7 @@ FROM OldestBusinesses
 GROUP BY country, category
 ORDER BY dominance_count DESC;
 
-17. Have any business categories consistently produced 
+16. Have any business categories consistently produced 
     long-lasting businesses across multiple countries?
 WITH LongLastingCategories AS (
   SELECT c.category
@@ -132,7 +132,7 @@ WITH LongLastingCategories AS (
 SELECT *
 FROM LongLastingCategories;
 
-18.  Which categories have the most significant variation 
+17.  Which categories have the most significant variation 
 in business longevity across different countries?
 SELECT c.category,
        STDDEV(EXTRACT(YEAR FROM CURRENT_DATE) - year_founded) AS longevity_variation
@@ -142,7 +142,7 @@ USING (category_code)
 GROUP BY category
 ORDER BY longevity_variation DESC;
 
-19. Which countries have the most businesses represented in the dataset?
+18. Which countries have the most businesses represented in the dataset?
 SELECT co.country, COUNT(*) AS num_businesses
 FROM business.businesses
 INNER JOIN business.countries AS co
@@ -150,7 +150,7 @@ USING(country_code)
 GROUP BY country
 ORDER BY num_businesses DESC;
 
-20. What are the top 5 countries with the most diverse range of business categories?
+19. What are the top 5 countries with the most diverse range of business categories?
 SELECT co.country, COUNT(DISTINCT c.category) AS num_unique_categories
 FROM business.businesses AS b
 INNER JOIN business.countries  AS co
@@ -161,7 +161,7 @@ GROUP BY country
 ORDER BY num_unique_categories DESC
 LIMIT 5;
 
-21. Identify any categories that have seen a 
+20. Identify any categories that have seen a 
 significant increase or decrease in representation over time.
 SELECT c.category,
        EXTRACT(DECADE FROM TO_DATE(year_founded::text, 'YYYY')) * 10 AS decade,
@@ -171,7 +171,7 @@ INNER JOIN business.categories AS c USING (category_code)
 GROUP BY category, decade
 ORDER BY category, num_businesses DESC;
 
-22. Analyze the distribution of businesses within each category by continent.
+21. Analyze the distribution of businesses within each category by continent.
 SELECT c.category, co.continent, COUNT(*) AS num_businesses
 FROM business.businesses AS b
 INNER JOIN business.categories AS c ON b.category_code = c.category_code
@@ -179,7 +179,7 @@ INNER JOIN business.countries AS co ON b.country_code = co.country_code
 GROUP BY c.category, co.continent
 ORDER BY c.category, co.continent;
 
-23. Explore the relationship between business age and category size.
+22. Explore the relationship between business age and category size.
 SELECT c.category, ROUND(AVG(EXTRACT(YEAR FROM CURRENT_DATE) - b.year_founded),0) AS average_age,
        COUNT(*) AS num_businesses
 FROM business.businesses AS b
@@ -187,14 +187,14 @@ INNER JOIN business.categories AS c ON b.category_code = c.category_code
 GROUP BY c.category
 ORDER BY average_age DESC;
 
-24. Identify any trends in the founding dates of businesses within each country.
+23. Identify any trends in the founding dates of businesses within each country.
 SELECT co.country, b.year_founded, COUNT(*) AS num_businesses
 FROM business.businesses AS b
 INNER JOIN business.countries AS co USING (country_code) 
 GROUP BY co.country, b.year_founded
 ORDER BY co.country, b.year_founded;
 
-25.  Investigate the evolution of dominant business categories across different country groupings.
+24.  Investigate the evolution of dominant business categories across different country groupings.
 SELECT c.category, co.continent, EXTRACT(DECADE FROM TO_DATE(b.year_founded::text, 'YYYY')) 
 * 10 AS decade,
        COUNT(*) AS num_businesses
